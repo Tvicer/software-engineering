@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  user_api_service:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./api:/app
+
+
+  marketplace_api_service:
+    build:
+      context: ./service
+      dockerfile: Dockerfile
+    ports:
+      - "8002:8002"
+    volumes:
+      - ./service:/app
