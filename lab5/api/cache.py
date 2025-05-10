@@ -1,10 +1,11 @@
-import redis
 import pickle
+
+import redis
 
 REDIS_HOST = "localhost"
 REDIS_PORT = 6379
 REDIS_DB = 0
-CACHE_EXPIRE_SECONDS = 300  # 5 минут
+CACHE_EXPIRE_SECONDS = 1800  # 30 минут
 
 redis_client = redis.Redis(
     host=REDIS_HOST,
@@ -13,6 +14,7 @@ redis_client = redis.Redis(
     decode_responses=False
 )
 
+
 def get_from_cache(key: str):
     """Получить данные из кеша"""
     cached_data = redis_client.get(key)
@@ -20,9 +22,11 @@ def get_from_cache(key: str):
         return pickle.loads(cached_data)
     return None
 
+
 def set_to_cache(key: str, data, expire: int = CACHE_EXPIRE_SECONDS):
     """Сохранить данные в кеш"""
     redis_client.setex(key, expire, pickle.dumps(data))
+
 
 def invalidate_cache(pattern: str):
     """Удалить данные из кеша по шаблону"""

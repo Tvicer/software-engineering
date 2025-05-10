@@ -4,6 +4,7 @@ from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
+from api.auth import verify_password
 from api.cache import set_to_cache, get_from_cache, invalidate_cache
 
 DATABASE_URL = "postgresql://postgres:123@localhost:5432/systemDesign"
@@ -85,9 +86,9 @@ def save_users(users: List[Dict]):
             user = User.from_dict(user_dict)
             db.add(user)
 
-            set_to_cache(f"user:{user}")
-
         db.commit()
+
+        set_to_cache("users:all", [user.to_dict() for user in db.query(User).all()])
 
     finally:
         db.close()
@@ -131,8 +132,8 @@ def delete_user_by_email(email: str) -> bool:
         db.commit()
 
         if result > 0:
-            invalidate_cache("users:*")
             invalidate_cache(f"user:email:{email}")
+            invalidate_cache("users:all")
 
         return result > 0
     finally:
@@ -143,8 +144,8 @@ def authenticate_user(email: str, password: str) -> Optional[User]:
     """Аутентифицирует пользователя"""
     db = SessionLocal()
     try:
-        user = db.query(User).filter(User.email == email).first()
-        if not user or not user.verify_password(password):
+        user = find_user_by_email(email)
+        if not user or not verify_password(password, user["password"]):
             return None
         return user
     finally:
