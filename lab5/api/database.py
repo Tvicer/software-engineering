@@ -4,10 +4,7 @@ from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-from api.auth import verify_password
-from api.cache import set_to_cache, get_from_cache, invalidate_cache
-
-DATABASE_URL = "postgresql://postgres:123@localhost:5432/systemDesign"
+DATABASE_URL = "postgresql://postgres:123@localhost:5432/postgres"
 
 Base = declarative_base()
 
@@ -59,18 +56,11 @@ def get_db():
 
 def load_users() -> List[Dict]:
     """Загружает всех пользователей из базы данных (без паролей)"""
-    cache_key = "users:all"
-    cached_data = get_from_cache(cache_key)
-    if cached_data is not None:
-        return cached_data
-
     create_tables()
     db = SessionLocal()
     try:
         users = db.query(User).all()
-        result = [user.to_dict() for user in users]
-        set_to_cache(cache_key, result)
-        return result
+        return [user.to_dict() for user in users]
     finally:
         db.close()
 
@@ -87,20 +77,12 @@ def save_users(users: List[Dict]):
             db.add(user)
 
         db.commit()
-
-        set_to_cache("users:all", [user.to_dict() for user in db.query(User).all()])
-
     finally:
         db.close()
 
 
 def find_user_by_email(email: str) -> Optional[Dict]:
     """Находит пользователя по email и возвращает данные для аутентификации"""
-    cache_key = f"user:email:{email}"
-    cached_data = get_from_cache(cache_key)
-    if cached_data is not None:
-        return cached_data
-
     create_tables()
     db = SessionLocal()
     try:
@@ -108,17 +90,13 @@ def find_user_by_email(email: str) -> Optional[Dict]:
         if not user:
             return None
 
-        result = {
+        return {
             "id": user.id,
             "email": user.email,
             "name": user.name,
             "role": user.role,
             "password": user.password
         }
-
-        set_to_cache(cache_key, result)
-
-        return result
     finally:
         db.close()
 
@@ -130,11 +108,6 @@ def delete_user_by_email(email: str) -> bool:
     try:
         result = db.query(User).filter(User.email == email).delete()
         db.commit()
-
-        if result > 0:
-            invalidate_cache(f"user:email:{email}")
-            invalidate_cache("users:all")
-
         return result > 0
     finally:
         db.close()
@@ -144,8 +117,8 @@ def authenticate_user(email: str, password: str) -> Optional[User]:
     """Аутентифицирует пользователя"""
     db = SessionLocal()
     try:
-        user = find_user_by_email(email)
-        if not user or not verify_password(password, user["password"]):
+        user = db.query(User).filter(User.email == email).first()
+        if not user or not user.verify_password(password):
             return None
         return user
     finally:

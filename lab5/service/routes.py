@@ -1,4 +1,3 @@
-# routes.py
 from fastapi import APIRouter, Depends, HTTPException
 
 from auth import get_current_user
@@ -49,7 +48,7 @@ def create_task_route(task: TaskCreate):
 
 
 @router.get("/api/v1/tasks", tags=["Задачи"])
-def get_all_tasks_in_project_route(project_id: str):
+def get_all_tasks_in_project_route(project_id: int):
     """Возвращает список всех задач в проекте"""
     tasks = get_all_tasks_in_project(project_id)
     return {"tasks": tasks}

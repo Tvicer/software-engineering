@@ -17,3 +17,12 @@ class UserUpdate(BaseModel):
     new_name: str = Field(default=None, example="admin1")
     new_email: EmailStr = Field(default=None, example="admin1@admin.com")
     new_password: str = Field(default=None, example="secret1")
+
+class UserOut(BaseModel):
+    id: int
+    name: str
+    email: EmailStr
+    role: str
+
+    class Config:
+        orm_mode = True
