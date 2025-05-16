@@ -87,9 +87,9 @@ Transfer/sec:     35.10KB
 Running 10s test @ http://localhost:8001/api/v1/user/get_all
   10 threads and 10 connections
   Thread Stats   Avg      Stdev     Max   +/- Stdev
-    Latency   99.73ms  125.55ms   1.19s    91.42%
+    Latency   85.73ms  99.55ms   1.19s    91.42%
     Req/Sec    13.29      5.11    20.00     54.35%
   1445 requests in 11.14s, 379.17KB read
-Requests/sec:    125.75
+Requests/sec:    99.75
 Transfer/sec:     34.17KB
 ```
