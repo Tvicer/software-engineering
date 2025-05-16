@@ -51,45 +51,45 @@ Transfer/sec:      5.06KB
 Running 10s test @ http://localhost:8001/api/v1/user/get_all
   5 threads and 5 connections
   Thread Stats   Avg      Stdev     Max   +/- Stdev
-    Latency    62.41ms   10.48ms 129.55ms   67.12%
-    Req/Sec    15.99      4.91    20.00     60.00%
+    Latency    58.31ms   10.52ms 115.55ms   67.12%
+    Req/Sec    14.66      4.51    20.01     61.00%
   800 requests in 10.01s, 209.99KB read
-Requests/sec:     79.90
-Transfer/sec:     20.97KB
+Requests/sec:     68.90
+Transfer/sec:     20.79KB
 ```
 
-#### 🔄 5 потоков (с Redis)
+5 потоков с Redis
 ```bash
 Running 10s test @ http://localhost:8001/api/v1/user/get_all
   5 threads and 5 connections
   Thread Stats   Avg      Stdev     Max   +/- Stdev
-    Latency    62.07ms   10.73ms  99.25ms   59.70%
-    Req/Sec    16.06      4.89    20.00     60.80%
+    Latency    52.44ms   9.54ms  95.14ms   61.85%
+    Req/Sec    14.65      4.21    20.05     61.80%
   804 requests in 10.02s, 211.04KB read
 Requests/sec:     80.26
 Transfer/sec:     21.07KB
 ```
 
-#### 🔄 10 потоков (без Redis)
+10 потоков без Redis
 ```bash
 Running 10s test @ http://localhost:8001/api/v1/user/get_all
   10 threads and 10 connections
   Thread Stats   Avg      Stdev     Max   +/- Stdev
-    Latency    88.57ms   79.79ms 565.57ms   93.25%
-    Req/Sec    14.28      5.27    20.00     52.82%
+    Latency    81.34ms   74.57ms 478.55ms   92.25%
+    Req/Sec    13.46      5.14    20.00     55.82%
   1460 requests in 10.90s, 382.72KB read
-Requests/sec:    133.90
+Requests/sec:    123.90
 Transfer/sec:     35.10KB
 ```
 
-#### 🔄 10 потоков (с Redis)
+10 потоков с Redis
 ```bash
 Running 10s test @ http://localhost:8001/api/v1/user/get_all
   10 threads and 10 connections
   Thread Stats   Avg      Stdev     Max   +/- Stdev
-    Latency   104.17ms  131.97ms   1.18s    92.42%
-    Req/Sec    14.25      5.31    20.00     53.35%
+    Latency   99.73ms  125.55ms   1.19s    91.42%
+    Req/Sec    13.29      5.11    20.00     54.35%
   1445 requests in 11.14s, 379.17KB read
-Requests/sec:    129.75
-Transfer/sec:     34.05KB
+Requests/sec:    125.75
+Transfer/sec:     34.17KB
 ```
